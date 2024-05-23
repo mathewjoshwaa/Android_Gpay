@@ -28,7 +28,7 @@ function onBuyClicked() {
             data: {
                 pa: 'vaseegrahveda@kvb',
                 pn: 'Vaseegrah Veda',
-                tr: 'TRF20240598',
+                tr: 'TRF20240553',
                 url: 'https://google.com',
                 mc: '5799',
                 tn: 'Purchase in Merchant',
