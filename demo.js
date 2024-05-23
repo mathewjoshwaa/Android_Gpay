@@ -205,10 +205,10 @@ async function initiateMerchantPayment() {
             },
             "invoice": {
                 "invoiceNumber": "Invoice456",
-                "invoiceTime": "2024-05-30T08:20:00.000Z"
+                "invoiceTime": "2017-02-15T10:50:30Z"
             }
         },
-        "expiryTime": "2024-05-30T08:20:00.000Z",
+        "expiryTime": "2017-02-15T10:50:30Z",
         "originatingPlatform": "ANDROID_APP"
     };
 
