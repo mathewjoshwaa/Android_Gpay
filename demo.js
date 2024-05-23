@@ -32,7 +32,7 @@ function onBuyClicked() {
                 url: 'https://google.com',
                 mc: '5799',
                 tn: 'Purchase in Merchant',
-                originatingPlatform: 'DESKTOP',
+                originatingPlatform: 'IOS_APP',
             },
         }
     ];
