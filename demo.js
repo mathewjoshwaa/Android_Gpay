@@ -1,48 +1,71 @@
+// Global key for canMakepayment cache.
 const canMakePaymentCache = 'canMakePaymentCache';
 
-async function checkCanMakePayment(request) {
+/**
+ * Check whether can make payment with Google Pay or not. It will check session storage
+ * cache first and use the cache directly if it exists. Otherwise, it will call
+ * canMakePayment method from PaymentRequest object and return the result, the
+ * result will also be stored in the session storage cache for future usage.
+ *
+ * @private
+ * @param {PaymentRequest} request The payment request object.
+ * @return {Promise} a promise containing the result of whether can make payment.
+ */
+function checkCanMakePayment(request) {
+    // Check canMakePayment cache, use cache result directly if it exists.
     if (sessionStorage.hasOwnProperty(canMakePaymentCache)) {
-        return JSON.parse(sessionStorage[canMakePaymentCache]);
+        return Promise.resolve(JSON.parse(sessionStorage[canMakePaymentCache]));
     }
 
-    try {
-        const result = request.canMakePayment ? await request.canMakePayment() : true;
+    // If canMakePayment() isn't available, default to assume the method is
+    // supported.
+    var canMakePaymentPromise = Promise.resolve(true);
 
-        sessionStorage[canMakePaymentCache] = JSON.stringify(result);
-        return result;
-    } catch (err) {
-        console.log('Error calling canMakePayment: ' + err);
-        throw err;
+    // Feature detect canMakePayment().
+    if (request.canMakePayment) {
+        canMakePaymentPromise = request.canMakePayment();
     }
+
+    return canMakePaymentPromise
+        .then((result) => {
+            // Store the result in cache for future usage.
+            sessionStorage[canMakePaymentCache] = result;
+            return result;
+        })
+        .catch((err) => {
+            console.log('Error calling canMakePayment: ' + err);
+        });
 }
 
+/** Launches payment request flow when user taps on buy button. */
 function onBuyClicked() {
     if (!window.PaymentRequest) {
         console.log('Web payments are not supported in this browser.');
         return;
     }
 
+    // Create supported payment method.
     const supportedInstruments = [
         {
             supportedMethods: ['https://tez.google.com/pay'],
             data: {
                 pa: 'vaseegrahveda@kvb',
                 pn: 'Vaseegrah Veda',
-                tr: '197A74819IQ',
+                tr: '1894ABCD',  // Your custom transaction reference ID
                 url: 'https://google.com',
-                mc: '5799',
+                mc: '5799', //Your merchant category code
                 tn: 'Purchase in Merchant',
-                originatingPlatform: 'ANDROID_APP',
             },
         }
     ];
 
+    // Create order detail data.
     const details = {
         total: {
             label: 'Total',
             amount: {
                 currency: 'INR',
-                value: '10.01',
+                value: '10.01', // sample amount
             },
         },
         displayItems: [{
@@ -54,6 +77,7 @@ function onBuyClicked() {
         }],
     };
 
+    // Create payment request object.
     let request = null;
     try {
         request = new PaymentRequest(supportedInstruments, details);
@@ -66,7 +90,8 @@ function onBuyClicked() {
         return;
     }
 
-    checkCanMakePayment(request)
+    var canMakePaymentPromise = checkCanMakePayment(request);
+    canMakePaymentPromise
         .then((result) => {
             showPaymentUI(request, result);
         })
@@ -75,12 +100,20 @@ function onBuyClicked() {
         });
 }
 
+/**
+ * Show the payment request UI.
+ *
+ * @private
+ * @param {PaymentRequest} request The payment request object.
+ * @param {Promise} canMakePayment The promise for whether can make payment.
+ */
 function showPaymentUI(request, canMakePayment) {
     if (!canMakePayment) {
         handleNotReadyToPay();
         return;
     }
 
+    // Set payment timeout.
     let paymentTimeout = window.setTimeout(function () {
         window.clearTimeout(paymentTimeout);
         request.abort()
@@ -90,22 +123,29 @@ function showPaymentUI(request, canMakePayment) {
             .catch(function () {
                 console.log('Unable to abort, user is in the process of paying.');
             });
-    }, 20 * 60 * 1000);
+    }, 20 * 60 * 1000); /* 20 minutes */
 
     request.show()
         .then(function (instrument) {
             window.clearTimeout(paymentTimeout);
-            processResponse(instrument);
+            processResponse(instrument); // Handle response from browser.
         })
         .catch(function (err) {
             console.log(err);
         });
 }
 
+/** Handle Google Pay not ready to pay case. */
 function handleNotReadyToPay() {
     alert('Google Pay is not ready to pay.');
 }
 
+/**
+ * Process the response from browser.
+ *
+ * @private
+ * @param {PaymentResponse} instrument The payment instrument that was authed.
+ */
 function processResponse(instrument) {
     var instrumentString = instrumentToJsonString(instrument);
     console.log(instrumentString);
@@ -129,6 +169,15 @@ function processResponse(instrument) {
         });
 }
 
+/**
+ * Notify browser that the instrument authorization has completed.
+ *
+ * @private
+ * @param {PaymentResponse} instrument The payment instrument that was authed.
+ * @param {string} result Whether the auth was successful. Should be either
+ * 'success' or 'fail'.
+ * @param {string} msg The message to log in console.
+ */
 function completePayment(instrument, result, msg) {
     instrument.complete(result)
         .then(function () {
@@ -140,7 +189,15 @@ function completePayment(instrument, result, msg) {
         });
 }
 
+/**
+ * Converts the payment response into a JSON string.
+ *
+ * @private
+ * @param {PaymentResponse} paymentResponse The payment response to convert.
+ * @return {string} The string representation of the payment response.
+ */
 function instrumentToJsonString(paymentResponse) {
+    // PaymentResponse is an interface, JSON.stringify works only on dictionaries.
     var paymentResponseDictionary = {
         methodName: paymentResponse.methodName,
         details: paymentResponse.details,
@@ -151,75 +208,4 @@ function instrumentToJsonString(paymentResponse) {
         payerEmail: paymentResponse.payerEmail,
     };
     return JSON.stringify(paymentResponseDictionary, undefined, 2);
-}
-
-// Provided code snippet
-async function initiateMerchantPayment() {
-    const requestData = {
-        "merchantInfo": {
-            "googleMerchantId": "BCR2DN6TWO37HOR3"
-        },
-        "userInfo": {
-            "phoneNumber": "+919597667724"
-        },
-        "merchantTransactionDetails": {
-            "transactionId": "1284ASSP",
-            "amountPayable": {
-                "currencyCode": "INR",
-                "units": 10,
-                "nanos": 0
-            },
-            "description": "Sample description",
-            "upiPaymentDetails": {
-                "vpa": "vaseegrahveda@kvb"
-            },
-            "gst": {
-                "gstin": "33BJEPV2043L1Z3",
-                "gstBreakUp": {
-                    "gst": {
-                        "currencyCode": "INR",
-                        "units": 5,
-                        "nanos": 0
-                    },
-                    "cgst": {
-                        "currencyCode": "INR",
-                        "units": 4,
-                        "nanos": 0
-                    },
-                    "sgst": {
-                        "currencyCode": "INR",
-                        "units": 3,
-                        "nanos": 0
-                    },
-                    "igst": {
-                        "currencyCode": "INR",
-                        "units": 1,
-                        "nanos": 0
-                    },
-                    "cess": {
-                        "currencyCode": "INR",
-                        "units": 1,
-                        "nanos": 0
-                    }
-                }
-            },
-            "invoice": {
-                "invoiceNumber": "Invoice456",
-                "invoiceTime": "2017-02-15T10:50:30Z"
-            }
-        },
-        "expiryTime": "2017-02-15T10:50:30Z",
-        "originatingPlatform": "ANDROID_APP"
-    };
-
-    fetch('https://nbupayments.googleapis.com/v1/merchantPayments:initiate', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-    })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
 }
