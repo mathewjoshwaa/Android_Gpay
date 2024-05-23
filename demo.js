@@ -60,21 +60,57 @@ function onBuyClicked() {
     ];
 
     // Create order detail data.
+    let shippingCharges = 0;
+    const orderAmount = 510; // sample amount
+    if (orderAmount > 500) {
+        shippingCharges = 0; // Free shipping
+    } else {
+        // Determine shipping charges based on the selected courier service
+        const selectedShippingOption = document.querySelector('input[name="shipping"]:checked').value;
+        switch (selectedShippingOption) {
+            case 'india_post':
+                shippingCharges = 40;
+                break;
+            case 'st_courier':
+                shippingCharges = 50;
+                break;
+            case 'delhivery':
+                shippingCharges = 100;
+                break;
+            case 'shiprocket':
+                shippingCharges = 100;
+                break;
+            default:
+                shippingCharges = 0; // Default to free shipping
+        }
+    }
+
+    const totalAmount = orderAmount + shippingCharges;
+
     const details = {
         total: {
-            label: 'Total',
+            label: 'Total (including shipping)',
             amount: {
                 currency: 'INR',
-                value: '10.01', // sample amount
+                value: totalAmount.toFixed(2),
             },
         },
-        displayItems: [{
-            label: 'Original Amount',
-            amount: {
-                currency: 'INR',
-                value: '10.01',
+        displayItems: [
+            {
+                label: 'Original Amount',
+                amount: {
+                    currency: 'INR',
+                    value: orderAmount.toFixed(2),
+                },
             },
-        }],
+            {
+                label: 'Shipping Charges',
+                amount: {
+                    currency: 'INR',
+                    value: shippingCharges.toFixed(2),
+                },
+            }
+        ],
     };
 
     // Create payment request object.
