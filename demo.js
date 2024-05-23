@@ -28,11 +28,11 @@ function onBuyClicked() {
             data: {
                 pa: 'vaseegrahveda@kvb',
                 pn: 'Vaseegrah Veda',
-                tr: 'TRF20240591',
+                tr: 'TRF20240598',
                 url: 'https://google.com',
                 mc: '5799',
                 tn: 'Purchase in Merchant',
-                originatingPlatform: 'DESKTOP',
+                originatingPlatform: 'ANDROID',
             },
         }
     ];
@@ -205,7 +205,7 @@ async function initiateMerchantPayment() {
             },
             "invoice": {
                 "invoiceNumber": "Invoice456",
-                "invoiceTime": "2017-02-15T10:50:30Z"
+                "invoiceTime": "2024-05-30T08:20:00.000Z"
             }
         },
         "expiryTime": "2024-05-30T08:20:00.000Z",
