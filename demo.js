@@ -208,7 +208,7 @@ async function initiateMerchantPayment() {
                 "invoiceTime": "2017-02-15T10:50:30Z"
             }
         },
-        "expiryTime": "2017-02-15T10:50:30Z",
+        "expiryTime": "2024-05-30T08:20:00.000Z",
         "originatingPlatform": "IOS_APP"
     };
 
