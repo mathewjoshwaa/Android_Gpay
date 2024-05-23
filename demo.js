@@ -66,7 +66,7 @@ function onBuyClicked() {
         shippingCharges = 0; // Free shipping
     } else {
         // Determine shipping charges based on the selected courier service
-        const selectedShippingOption = document.querySelector('input[name="shipping"]:checked').value;
+        const selectedShippingOption = 'india_post';
         switch (selectedShippingOption) {
             case 'india_post':
                 shippingCharges = 40;
