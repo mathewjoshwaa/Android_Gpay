@@ -28,10 +28,11 @@ function onBuyClicked() {
             data: {
                 pa: 'vaseegrahveda@kvb',
                 pn: 'Vaseegrah Veda',
-                tr: 'TRF20240553',
+                tr: '197A74819IQ',
                 url: 'https://google.com',
                 mc: '5799',
                 tn: 'Purchase in Merchant',
+                originatingPlatform: 'ANDROID_APP',
             },
         }
     ];
@@ -207,7 +208,8 @@ async function initiateMerchantPayment() {
                 "invoiceTime": "2017-02-15T10:50:30Z"
             }
         },
-        "expiryTime": "2017-02-15T10:50:30Z"
+        "expiryTime": "2017-02-15T10:50:30Z",
+        "originatingPlatform": "ANDROID_APP"
     };
 
     fetch('https://nbupayments.googleapis.com/v1/merchantPayments:initiate', {
@@ -221,4 +223,3 @@ async function initiateMerchantPayment() {
         .then(data => console.log(data))
         .catch(error => console.error('Error:', error));
 }
-
