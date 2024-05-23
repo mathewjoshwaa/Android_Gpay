@@ -32,7 +32,7 @@ function onBuyClicked() {
                 url: 'https://google.com',
                 mc: '5799',
                 tn: 'Purchase in Merchant',
-                originatingPlatform: 'ANDROID',
+                originatingPlatform: 'ANDROID_APP',
             },
         }
     ];
@@ -209,7 +209,7 @@ async function initiateMerchantPayment() {
             }
         },
         "expiryTime": "2024-05-30T08:20:00.000Z",
-        "originatingPlatform": "IOS_APP"
+        "originatingPlatform": "ANDROID_APP"
     };
 
     fetch('https://nbupayments.googleapis.com/v1/merchantPayments:initiate', {
