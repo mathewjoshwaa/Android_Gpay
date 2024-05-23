@@ -51,7 +51,7 @@ function onBuyClicked() {
             data: {
                 pa: 'vaseegrahveda@kvb',
                 pn: 'Vaseegrah Veda',
-                tr: '1894ABCD',  // Your custom transaction reference ID
+                tr: '1894ZXCV',  // Your custom transaction reference ID
                 url: 'https://google.com',
                 mc: '5799', //Your merchant category code
                 tn: 'Purchase in Merchant',
