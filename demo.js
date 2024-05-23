@@ -61,7 +61,7 @@ function onBuyClicked() {
 
     // Create order detail data.
     let shippingCharges = 0;
-    const orderAmount = 510; // sample amount
+    const orderAmount = 300; // sample amount
     if (orderAmount > 500) {
         shippingCharges = 0; // Free shipping
     } else {
