@@ -49,9 +49,9 @@ function onBuyClicked() {
         {
             supportedMethods: ['https://tez.google.com/pay'],
             data: {
-                pa: 'vaseegrahveda@kvb',
-                pn: 'Vaseegrah Veda',
-                tr: '1894ZXCV',  // Your custom transaction reference ID
+                pa: 'edu.kamesh@oksbi',
+                pn: 'Kamesh',
+                tr: '1894ABCD',  // Your custom transaction reference ID
                 url: 'https://google.com',
                 mc: '5799', //Your merchant category code
                 tn: 'Purchase in Merchant',
@@ -60,57 +60,21 @@ function onBuyClicked() {
     ];
 
     // Create order detail data.
-    let shippingCharges = 0;
-    const orderAmount = 300; // sample amount
-    if (orderAmount > 500) {
-        shippingCharges = 0; // Free shipping
-    } else {
-        // Determine shipping charges based on the selected courier service
-        const selectedShippingOption = 'shiprocket';
-        switch (selectedShippingOption) {
-            case 'india_post':
-                shippingCharges = 40;
-                break;
-            case 'st_courier':
-                shippingCharges = 50;
-                break;
-            case 'delivery':
-                shippingCharges = 100;
-                break;
-            case 'shiprocket':
-                shippingCharges = 100;
-                break;
-            default:
-                shippingCharges = 0; // Default to free shipping
-        }
-    }
-
-    const totalAmount = orderAmount + shippingCharges;
-
     const details = {
         total: {
-            label: 'Total (including shipping)',
+            label: 'Total',
             amount: {
                 currency: 'INR',
-                value: totalAmount.toFixed(2),
+                value: '10.01', // sample amount
             },
         },
-        displayItems: [
-            {
-                label: 'Original Amount',
-                amount: {
-                    currency: 'INR',
-                    value: orderAmount.toFixed(2),
-                },
+        displayItems: [{
+            label: 'Original Amount',
+            amount: {
+                currency: 'INR',
+                value: '10.01',
             },
-            {
-                label: 'Shipping Charges',
-                amount: {
-                    currency: 'INR',
-                    value: shippingCharges.toFixed(2),
-                },
-            }
-        ],
+        }],
     };
 
     // Create payment request object.
